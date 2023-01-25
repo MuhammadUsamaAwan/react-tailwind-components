@@ -1,32 +1,17 @@
 import clsx from 'clsx';
-import { ImSpinner2 } from 'react-icons/im';
 
 interface Props {
   label: string;
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
-  type?: 'button' | 'submit';
-  disabled?: boolean;
-  loading?: boolean;
   icon?: JSX.Element;
-  onClick?: () => void;
+  href: string;
   className?: string;
 }
 
-export default function Button({
-  label,
-  type = 'button',
-  color = 'primary',
-  disabled = false,
-  loading = false,
-  icon,
-  onClick,
-  className,
-}: Props) {
+export default function LinkButton({ label, color = 'primary', icon, href, className }: Props) {
   return (
-    <button
-      type={type === 'submit' ? 'submit' : 'button'}
-      disabled={disabled || loading}
-      onClick={onClick}
+    <a
+      href={href}
       className={clsx(
         'flex items-center justify-center space-x-1 rounded px-4 py-1 text-white shadow duration-200 ease-out focus:outline-none active:scale-95 disabled:cursor-not-allowed',
         color === 'primary' && 'bg-primary-1 hover:bg-primary-2 focus:bg-primary-2 disabled:bg-primary-3',
@@ -37,8 +22,8 @@ export default function Button({
         className
       )}
     >
-      {loading ? <ImSpinner2 className='animate-spin' /> : icon}
+      {icon}
       <span>{label}</span>
-    </button>
+    </a>
   );
 }
