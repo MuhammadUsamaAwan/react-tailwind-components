@@ -1,10 +1,9 @@
 import clsx from 'clsx';
+import { useEffect, useState, useRef, ReactNode } from 'react';
 import { Menu as HeadlessMenu } from '@headlessui/react';
-import { VscChevronDown } from 'react-icons/vsc';
 
 interface Props {
-  label: string;
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+  label: ReactNode;
   disabled?: boolean;
   className?: string;
   placement?: 'left' | 'right' | 'center';
@@ -20,38 +19,27 @@ interface MenuItem {
   onClick?: () => void;
 }
 
-export default function MenuButton({
-  label,
-  color = 'primary',
-  disabled = false,
-  className,
-  placement = 'left',
-  items,
-}: Props) {
+export default function Menu({ label, disabled = false, className, placement = 'left', items }: Props) {
+  const [height, setHeight] = useState<number | undefined>(0);
+  const ref = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    setHeight(ref?.current?.clientHeight);
+  }, []);
+
   return (
     <div className={clsx('relative w-min', className)}>
       <HeadlessMenu>
-        <HeadlessMenu.Button
-          disabled={disabled}
-          className={clsx(
-            'flex items-center justify-center space-x-1 rounded px-3 py-1 text-white shadow duration-200 ease-out focus:outline-none disabled:cursor-not-allowed',
-            color === 'primary' && 'bg-primary-1 hover:bg-primary-2 focus:bg-primary-2 disabled:bg-primary-3',
-            color === 'secondary' && 'bg-secondary-1 hover:bg-secondary-2 focus:bg-secondary-2 disabled:bg-secondary-3',
-            color === 'success' && 'bg-success-1 hover:bg-success-2 focus:bg-success-2 disabled:bg-success-3',
-            color === 'warning' && 'bg-warning-1 hover:bg-warning-2 focus:bg-warning-2 disabled:bg-warning-3',
-            color === 'danger' && 'bg-danger-1 hover:bg-danger-2 focus:bg-danger-2 disabled:bg-danger-3',
-            className
-          )}
-        >
-          <span>{label}</span>
-          <VscChevronDown />
+        <HeadlessMenu.Button disabled={disabled} ref={ref}>
+          {label}
         </HeadlessMenu.Button>
         <HeadlessMenu.Items
           className={clsx(
-            'absolute top-[2.25rem] w-max space-y-0.5 rounded border border-slate-200 bg-white p-1 shadow',
+            'absolute w-max space-y-0.5 rounded border border-slate-200 bg-white p-1 shadow',
             placement === 'left' && 'left-0',
             placement === 'right' && 'right-0',
-            placement === 'center' && 'left-1/2 -translate-x-1/2'
+            placement === 'center' && 'left-1/2 -translate-x-1/2',
+            `top-[calc(${height}px+4px)]`
           )}
         >
           {items.map(item => (
